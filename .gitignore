@@ -1,0 +1,19 @@
+# Configuración de Entorno
+.env
+.gemini/
+
+# Dependencias
+node_modules/
+
+# Archivos de Sistema / IDE
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# Archivos de entorno del servidor (no subir credenciales)
+core/database/env.php
+core/database/env.production.php
+
+# Scripts de Deploy
+# .scripts/ (Versionado en GitHub pero excluido del host)

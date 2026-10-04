@@ -1,0 +1,110 @@
+/* public_html/core/assets/css/global_tools.css */
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: 'Calibri', sans-serif;
+    font-size: clamp(12px, 2vw, 18px) 
+}
+
+body {
+    background-color: #F6F6F6;
+    color: #333;
+    margin: 0;
+    padding: 0;
+}
+
+.main-container {
+    margin-left: 70px;
+    transition: margin-left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    min-height: 100vh;
+}
+
+.sub-container {
+    width: 100%;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+        
+@media (max-width: 768px) {
+    .main-container {
+        margin-left: 0;
+    }
+}
+
+/* ──────────────────────────────────────────────────────── */
+/* SCROLLBAR PERSONALIZADO PITAYA ERP                       */
+/* ──────────────────────────────────────────────────────── */
+
+/* Firefox 64+ (Estándar W3C) */
+* {
+    scrollbar-width: thin;
+    scrollbar-color: #51B8AC #f0f0f0;
+}
+
+/* Chrome, Edge, Safari y navegadores basados en WebKit */
+::-webkit-scrollbar {
+    width: 7px;
+    height: 7px;
+}
+
+::-webkit-scrollbar-track {
+    background: #f0f0f0;
+    border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #51B8AC;
+    border-radius: 10px;
+    transition: background 0.3s ease;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #0E544C;
+}
+
+/* ──────────────────────────────────────────────────────── */
+/* BARRA DE FORMATO HTML (html-toolbar)                     */
+/* Usada en textareas con contenido HTML editable           */
+/* ──────────────────────────────────────────────────────── */
+
+.btn-xs {
+    padding: 0.18rem 0.55rem;
+    font-size: 0.78rem;
+    line-height: 1.4;
+    border-radius: 4px;
+}
+
+.html-toolbar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+    padding: 6px 8px;
+    background: #f8f9fa;
+    border: 1px solid #dee2e6;
+    border-radius: 6px 6px 0 0;
+    border-bottom: none;
+}
+
+.html-toolbar + .form-text,
+.html-toolbar + div.form-text {
+    margin-top: 0;
+    padding: 2px 6px;
+    background: #f8f9fa;
+    border: 1px solid #dee2e6;
+    border-top: 1px dashed #ced4da;
+    border-bottom: none;
+    border-radius: 0;
+    font-size: 0.75rem;
+    color: #6c757d;
+}
+
+.html-toolbar ~ textarea.form-control,
+.html-toolbar + .form-text + textarea.form-control,
+.html-toolbar + div.form-text + textarea.form-control {
+    border-radius: 0 0 6px 6px;
+    border-top: 1px dashed #ced4da;
+}
+

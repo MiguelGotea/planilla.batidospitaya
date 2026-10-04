@@ -1,0 +1,73 @@
+name: 🚀 Deploy Planilla - Batidos Pitaya
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: 📥 Checkout código
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+        
+    - name: 🛡️ Validar sentencias estructurales en PHP
+      run: |
+        BEFORE="${{ github.event.before }}"
+        if [ -z "$BEFORE" ] || [ "$BEFORE" = "0000000000000000000000000000000000000000" ]; then BEFORE="HEAD~1"; fi
+        CHANGED_FILES=$(git diff --name-only $BEFORE ${{ github.sha }} | grep '\.php$' || true)
+        if [ -n "$CHANGED_FILES" ]; then
+          for file in $CHANGED_FILES; do
+            if [ -f "$file" ]; then
+              if grep -iwe -E "(create|drop|alter|rename|truncate)\s+table" "$file"; then
+                echo "❌ ERROR: Se detectó una sentencia estructural en $file. No se subirá al host."
+                exit 1
+              fi
+            fi
+          done
+          echo "✅ Los archivos PHP modificados están limpios."
+        else
+          echo "✅ No hay archivos PHP modificados."
+        fi
+
+    - name: 🔑 Configurar SSH
+      uses: webfactory/ssh-agent@v0.8.0
+      with:
+        ssh-private-key: ${{ secrets.HOSTINGER_SSH_KEY }}
+        
+    - name: 📤 Sincronizar archivos (rsync)
+      run: |
+        echo "🔄 Sincronizando archivos planilla..."
+        
+        rsync -avz \
+          --delete \
+          --exclude='.git/' \
+          --exclude='.github/' \
+          --exclude='.gitignore' \
+          --exclude='.scripts/' \
+          --exclude='core/database/env.php' \
+          --exclude='core/database/env.production.php' \
+          -e "ssh -o StrictHostKeyChecking=no -p 65002" \
+          ./ \
+          ${{ secrets.HOSTINGER_USER }}@${{ secrets.HOSTINGER_HOST }}:${{ secrets.HOSTINGER_PATH_PLANILLA }}/
+          
+    - name: 🔧 Configurar permisos
+      run: |
+        echo "🔧 Configurando permisos en el servidor..."
+        
+        ssh -o StrictHostKeyChecking=no -p 65002 ${{ secrets.HOSTINGER_USER }}@${{ secrets.HOSTINGER_HOST }} << 'EOF'
+          cd ${{ secrets.HOSTINGER_PATH_PLANILLA }}
+          find . -maxdepth 1 -type d ! -path "." -exec chmod 755 {} \;
+          find assets includes core -type d -exec chmod 755 {} \; 2>/dev/null || true
+          find . -maxdepth 1 -type f -exec chmod 644 {} \;
+          find assets includes core -type f -exec chmod 644 {} \; 2>/dev/null || true
+          echo "✅ Permisos actualizados."
+        EOF
+        
+    - name: ✅ Verificar deploy
+      run: |
+        echo "✅ Deploy completado para planilla.batidospitaya.com"
+        echo "🌐 Sitio: https://planilla.batidospitaya.com"

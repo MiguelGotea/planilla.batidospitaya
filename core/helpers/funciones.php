@@ -1678,25 +1678,6 @@ function obtenerSalarioReferencia($codOperario)
     return $contrato['salario_inicial'] ?? null;
 }
 
-/**
- * Obtiene la categoría sugerida para un cargo específico
- */
-function obtenerCategoriaSugeridaPorCargo($codCargo)
-{
-    $mapeo = [
-        2 => [ // Cargo: Operario
-            'idCategoria' => 5,
-            'nombre' => 'Operario'
-        ],
-        5 => [ // Cargo: Líder de Sucursal
-            'idCategoria' => 1,
-            'nombre' => 'Líder'
-        ]
-        // Agregar más mapeos según necesites
-    ];
-
-    return $mapeo[$codCargo] ?? null;
-}
 
 /**
  * Obtiene información completa de categoría por ID

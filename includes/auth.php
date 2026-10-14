@@ -18,7 +18,9 @@ function obtenerUsuarioActual() {
     
     global $conn;
     $stmt = $conn->prepare("
-        SELECT o.*, nc.Nombre as cargo_nombre, nc.CodNivelesCargos
+        SELECT o.CodOperario, o.Nombre, o.Nombre2, o.Apellido, o.Apellido2,
+               o.foto_perfil,
+               nc.Nombre as cargo_nombre, nc.CodNivelesCargos
         FROM Operarios o
         JOIN AsignacionNivelesCargos anc ON o.CodOperario = anc.CodOperario
         JOIN NivelesCargos nc ON anc.CodNivelesCargos = nc.CodNivelesCargos

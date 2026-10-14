@@ -78,6 +78,14 @@ function renderHeader($usuario, $esAdmin = false, $titulo = '') {
             font-size: 1.2rem !important;
             box-shadow: 0 2px 8px rgba(81, 184, 172, 0.3);
             text-transform: uppercase;
+            overflow: hidden;
+        }
+        
+        .user-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 50%;
         }
         
         .user-details {
@@ -191,10 +199,27 @@ function renderHeader($usuario, $esAdmin = false, $titulo = '') {
         <?php endif; ?>
         
         <div class="user-info">
+            <?php
+            // --- Foto de perfil ---
+            // Las fotos viven en el servidor del ERP (erp.batidospitaya.com).
+            // Se construye la URL cross-domain con cache-buster por usuario (?v=CodOperario)
+            // para que el navegador cachée por usuario: mismo usuario = usa caché,
+            // usuario diferente = URL diferente = descarga la foto correcta.
+            $fotoPlanilla = $usuario['foto_perfil'] ?? null;
+            $fotoUrlPlanilla = '';
+            if (!empty($fotoPlanilla)) {
+                $rutaLimpia = ltrim($fotoPlanilla, './');
+                $fotoUrlPlanilla = 'https://erp.batidospitaya.com/' . $rutaLimpia . '?v=' . ($usuario['CodOperario'] ?? 0);
+            }
+            $inicialPlanilla = strtoupper(substr($usuario['Nombre'] ?? $usuario['nombre'] ?? 'U', 0, 1));
+            ?>
             <div class="user-avatar" title="<?php echo $esAdmin ? htmlspecialchars($usuario['Nombre']) : htmlspecialchars($usuario['Nombre'].' '.$usuario['Apellido']); ?>">
-                <?= $esAdmin ? 
-                    strtoupper(substr($usuario['nombre'], 0, 1)) : 
-                    strtoupper(substr($usuario['Nombre'], 0, 1)) ?>
+                <?php if ($fotoUrlPlanilla): ?>
+                    <img src="<?= htmlspecialchars($fotoUrlPlanilla) ?>" alt="Foto de perfil"
+                         onerror="this.parentElement.innerHTML='<?= $inicialPlanilla ?>'">
+                <?php else: ?>
+                    <?= $inicialPlanilla ?>
+                <?php endif; ?>
             </div>
             <div class="user-details">
                 <div class="user-name">
